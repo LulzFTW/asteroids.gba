@@ -12,12 +12,12 @@ PROGNAME = Asteroids
 # that will be compiled into your program. For example
 # if you have main.c and myLib.c then in the following
 # line you would put main.o and myLib.o
-OFILES = main.o myLib.o text.c font.c sprites.c trig.c images.c
+OBJECTS = $(patsubst %.c, %.o, $(wildcard *.c))
 
 # The header files you have created.
 # This is necessary to determine when to recompile for files.
 # This should be a space (SPACE!) separated list of .h files
-HFILES = myLib.h text.h sprites.h trig.h images.h
+HEADERS = $(wildcard *.h)
 
 ################################################################################
 # These are various settings used to make the GBA toolchain work
@@ -34,12 +34,12 @@ $(PROGNAME).gba : $(PROGNAME).elf
 	@echo "[LINK] Linking objects together to create $(PROGNAME).gba"
 	@$(OBJCOPY) -O binary $(PROGNAME).elf $(PROGNAME).gba
 
-$(PROGNAME).elf : res/crt0.o $(GCCLIB)/crtbegin.o $(GCCLIB)/crtend.o $(GCCLIB)/crti.o $(GCCLIB)/crtn.o $(OFILES)
+$(PROGNAME).elf : res/crt0.o $(GCCLIB)/crtbegin.o $(GCCLIB)/crtend.o $(GCCLIB)/crti.o $(GCCLIB)/crtn.o $(OBJECTS)
 	@$(CC) $(LINKFLAGS) -o $(PROGNAME).elf $^ -lgcc -lc $(LDDEBUG)
 	@rm -f *.d
 
 
-%.o : %.c
+%.o : %.c $(HEADERS)
 	@echo "[COMPILE] Compiling $<"
 	@$(CC) $(CFLAGS) -c $< -o $@
 

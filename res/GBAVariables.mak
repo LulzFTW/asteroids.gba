@@ -9,18 +9,18 @@ CC      := $(CROSS)gcc
 LD      := $(CROSS)ld
 OBJCOPY := $(CROSS)objcopy
 
-OFILES += res/crt0.o res/libc_sbrk.o
+OBJECTS += res/crt0.o res/libc_sbrk.o
 
 ARMINC = /usr/arm-none-eabi/include
 ARMLIB = /usr/arm-none-eabi/lib
 GCCLIB = /usr/lib/gcc/arm-none-eabi/$(GCC_VERSION)
 
-CFLAGS   += -Wall -Werror -std=c99 -pedantic -Wextra
+CFLAGS   += -Wall -Werror -std=gnu11 -pedantic -Wextra
 
-MODEL    = -mthumb-interwork -mthumb
-CFLAGS   += $(MODEL) -mlong-calls -MMD -MP -I $(ARMINC)
+MODEL    = -mthumb-interwork
+CFLAGS   += $(MODEL) -marm -mlong-calls -MMD -MP -I $(ARMINC)
 LINKFLAGS = -nostartfiles -L $(ARMLIB) \
-	  -L $(ARMLIB)/thumb \
+	  -L $(ARMLIB) \
 	  -L $(GCCLIB) \
 	  -T res/arm-gba.ld
 
