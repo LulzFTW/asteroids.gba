@@ -22,9 +22,19 @@ short asteroidCount = 3;
 
 State currentState = START;
 
+void vblank_handler() {
+    REG_IF = INT_VB;        // acknowledge vblank
+    REG_IFBIOS = INT_VB;    // acknowledge vblank for bios
+}
+
 int main()
 {
     REG_DISPCNT = MODE3 | BG2_ENABLE | OBJ_ENABLE | SPRITES_DIMENSION_TYPE;
+
+    REG_ISR_MAIN = vblank_handler;  // pass address of interrupt handler
+    REG_DISPSTAT |= 1 << 3;         // fire vblank interrupts
+    REG_IE = INT_VB;                // receive vblank interrupts
+    REG_IME = 1;                    // global interrupt enable
 
     init_sprites();
     init_game();

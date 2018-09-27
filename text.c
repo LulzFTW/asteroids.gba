@@ -3,7 +3,7 @@
 
 void drawChar(int x, int y, char c, unsigned short color)
 {
-    const char *cdata = &fontdata_6x8[c * 48];
+    const unsigned char *cdata = &fontdata_6x8[c * 48];
     for (int i = 0; i < 8; i++)
     {
         for (int j = 0; j < 6; j++)
@@ -24,4 +24,3 @@ void drawString(int x, int y, char *str, unsigned short color)
 		x += 6;
 	}
 }
-

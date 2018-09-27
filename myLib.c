@@ -3,6 +3,12 @@
 #include "trig.h"
 #include "text.h"
 
+#ifdef __thumb__
+#define swi_call(x)   asm volatile("swi\t"#x ::: "r0", "r1", "r2", "r3")
+#else
+#define swi_call(x)   asm volatile("swi\t"#x"<<16" ::: "r0", "r1", "r2", "r3")
+#endif
+
 unsigned short *videoBuffer = (unsigned short *) 0x6000000;
 charblock *charbase = ((charblock *) 0x6000000);
 ObjAttr ARR_IN_IWRAM spriteBuffer[NUM_SPRITES];
@@ -99,12 +105,8 @@ void setPixel(int x, int y, unsigned short color)
 	videoBuffer[x + y * 240] = color;
 }
 
-/*
- * busy wait
- * i cri every time
- */
 void waitForVblank()
 {
-	while(SCANLINECOUNTER > 160);
-	while(SCANLINECOUNTER < 159);
+    // VBlankIntrWait
+    swi_call(0x05);
 }
